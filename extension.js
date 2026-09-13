@@ -202,7 +202,7 @@ class HookManager {
       settings.hooks[name] = settings.hooks[name].filter((matcherGroup) => {
         if (!matcherGroup) return false;
         // Handle legacy flat structure: { matcher: 'Bash', command: '...' }
-        if (matcherGroup.command && matcherGroup.command.includes('claude-code-monitor')) {
+        if (matcherGroup.command && (matcherGroup.command.includes('claude-code-monitor') || matcherGroup.command.includes('claude-code-terminal-monitor') || matcherGroup.command.includes('hooks/pre.js') || matcherGroup.command.includes('hooks/post.js'))) {
           return false;
         }
         return true;
@@ -223,7 +223,7 @@ class HookManager {
 
       // Remove legacy hook commands if present
       bashGroup.hooks = bashGroup.hooks.filter(
-        (h) => !(h && h.command && h.command.includes('claude-code-monitor'))
+        (h) => !(h && h.command && (h.command.includes('claude-code-monitor') || h.command.includes('claude-code-terminal-monitor') || h.command.includes('hooks/pre.js') || h.command.includes('hooks/post.js')))
       );
 
       // Inject current extension hook path
