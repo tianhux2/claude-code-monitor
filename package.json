@@ -8,8 +8,7 @@
     "type": "git",
     "url": "https://github.com/tianhux2/claude-code-monitor.git"
   },
-  "publisher": "local",
-  "private": true,
+  "publisher": "eaoef",
   "extensionKind": [
     "workspace",
     "ui"
