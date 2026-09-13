@@ -1,0 +1,173 @@
+{
+  "name": "claude-code-monitor",
+  "displayName": "Claude Code: Terminal & Task Monitor",
+  "description": "%extension.description%",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tianhux2/claude-code-monitor.git"
+  },
+  "publisher": "local",
+  "private": true,
+  "extensionKind": [
+    "workspace",
+    "ui"
+  ],
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "claude",
+    "claude-code",
+    "claude code",
+    "terminal",
+    "bash",
+    "task",
+    "monitor",
+    "output",
+    "process"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "claudeCodeMonitor",
+          "title": "%views.container.title%",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "claudeCodeMonitor": [
+        {
+          "type": "webview",
+          "id": "claudeCodeMonitorView",
+          "name": "%views.monitor.name%",
+          "contextualTitle": "Claude Code: Terminal & Task Monitor"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "claudeCodeMonitor.toggleHook",
+        "title": "%command.toggleHook%",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "claudeCodeMonitor.enableHook",
+        "title": "%command.enableHook%",
+        "icon": "$(debug-disconnect)"
+      },
+      {
+        "command": "claudeCodeMonitor.toggleAutoFollow",
+        "title": "%command.toggleAutoFollow%",
+        "icon": "$(target)"
+      },
+      {
+        "command": "claudeCodeMonitor.enableAutoFollow",
+        "title": "%command.enableAutoFollow%",
+        "icon": "$(circle-slash)"
+      },
+      {
+        "command": "claudeCodeMonitor.refresh",
+        "title": "%command.refresh%",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "claudeCodeMonitor.openSettings",
+        "title": "%command.openSettings%",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "claudeCodeMonitor.openRunsDir",
+        "title": "%command.openRunsDir%",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "claudeCodeMonitor.clearHistory",
+        "title": "%command.clearHistory%",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "claudeCodeMonitor.openLogFile",
+        "title": "%command.openLogFile%",
+        "icon": "$(link-external)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "claudeCodeMonitor.toggleHook",
+          "when": "view == claudeCodeMonitorView && claudeCodeMonitor.hookEnabled",
+          "group": "navigation@1"
+        },
+        {
+          "command": "claudeCodeMonitor.enableHook",
+          "when": "view == claudeCodeMonitorView && !claudeCodeMonitor.hookEnabled",
+          "group": "navigation@1"
+        },
+        {
+          "command": "claudeCodeMonitor.toggleAutoFollow",
+          "when": "view == claudeCodeMonitorView && claudeCodeMonitor.autoFollowEnabled",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeCodeMonitor.enableAutoFollow",
+          "when": "view == claudeCodeMonitorView && !claudeCodeMonitor.autoFollowEnabled",
+          "group": "navigation@2"
+        },
+        {
+          "command": "claudeCodeMonitor.refresh",
+          "when": "view == claudeCodeMonitorView",
+          "group": "navigation@3"
+        },
+        {
+          "command": "claudeCodeMonitor.openSettings",
+          "when": "view == claudeCodeMonitorView",
+          "group": "navigation@4"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Claude Code Monitor",
+      "properties": {
+        "claudeCodeMonitor.runsDir": {
+          "type": "string",
+          "default": "",
+          "description": "%config.runsDir.description%"
+        },
+        "claudeCodeMonitor.maxLines": {
+          "type": "number",
+          "default": 3000,
+          "description": "%config.maxLines.description%"
+        },
+        "claudeCodeMonitor.autoFollow": {
+          "type": "boolean",
+          "default": true,
+          "description": "%config.autoFollow.description%"
+        },
+        "claudeCodeMonitor.language": {
+          "type": "string",
+          "enum": ["auto", "zh", "en"],
+          "default": "auto",
+          "description": "%config.language.description%"
+        },
+        "claudeCodeMonitor.theme": {
+          "type": "string",
+          "enum": ["auto", "dark", "light", "high-contrast"],
+          "default": "auto",
+          "description": "%config.theme.description%"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "extension.description": "Claude Code 实时终端输出与 Bash 任务监控插件",
+  "views.container.title": "Claude 监控",
+  "views.monitor.name": "任务监控",
+  "command.toggleHook": "Claude Hook: 已启用",
+  "command.enableHook": "Claude Hook: 已停用",
+  "command.toggleAutoFollow": "自动追踪: 已开启",
+  "command.enableAutoFollow": "自动追踪: 已暂停",
+  "command.refresh": "刷新任务列表",
+  "command.clearHistory": "清除已结束的记录",
+  "command.openLogFile": "在原生编辑器中打开完整输出日志",
+  "command.openRunsDir": "在资源管理器中打开日志目录",
+  "command.openSettings": "监控偏好设置",
+  "config.runsDir.description": "记录目录，留空则默认使用 ~/.claude/bash-runs",
+  "config.maxLines.description": "终端内置面板最多保留的滑动窗口行数，防止海量日志拖慢渲染",
+  "config.autoFollow.description": "有新命令产生时是否自动选中并跟随输出（默认开启，可在顶栏一键切换）",
+  "config.language.description": "监控面板的显示界面语言",
+  "config.theme.description": "监控面板的外观色彩主题"
+}

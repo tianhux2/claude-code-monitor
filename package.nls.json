@@ -1,0 +1,19 @@
+{
+  "extension.description": "Real-time terminal output and Bash task monitor for Claude Code",
+  "views.container.title": "Claude Monitor",
+  "views.monitor.name": "Task Monitor",
+  "command.toggleHook": "Claude Hook: Enabled",
+  "command.enableHook": "Claude Hook: Disabled",
+  "command.toggleAutoFollow": "Auto-Follow: Enabled",
+  "command.enableAutoFollow": "Auto-Follow: Paused",
+  "command.refresh": "Refresh Task List",
+  "command.clearHistory": "Clear Finished Records",
+  "command.openLogFile": "Open Full Log File in Editor",
+  "command.openRunsDir": "Open Bash Runs Directory in Explorer",
+  "command.openSettings": "Monitor Preferences",
+  "config.runsDir.description": "Runs directory, leave empty to default to ~/.claude/bash-runs",
+  "config.maxLines.description": "Maximum sliding window line count in embedded panel to prevent lag",
+  "config.autoFollow.description": "Automatically select and follow new commands when they appear",
+  "config.language.description": "Display language for the monitor interface",
+  "config.theme.description": "Appearance color theme for the monitor interface"
+}
