@@ -1606,6 +1606,7 @@ async function handleOpenSettings(context, webviewProvider) {
  * Extension Activation Function
  */
 function activate(context) {
+  const isZh = (vscode.env.language || 'en').toLowerCase().startsWith('zh');
   const runsDir = getRunsDir();
   if (!fs.existsSync(runsDir)) {
     fs.mkdirSync(runsDir, { recursive: true });
