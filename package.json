@@ -2,7 +2,8 @@
   "name": "claude-code-terminal-monitor",
   "displayName": "Claude Code: Terminal & Task Monitor",
   "description": "%extension.description%",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "icon": "media/icon.png",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -156,13 +157,22 @@
         },
         "claudeCodeMonitor.language": {
           "type": "string",
-          "enum": ["auto", "zh", "en"],
+          "enum": [
+            "auto",
+            "zh",
+            "en"
+          ],
           "default": "auto",
           "description": "%config.language.description%"
         },
         "claudeCodeMonitor.theme": {
           "type": "string",
-          "enum": ["auto", "dark", "light", "high-contrast"],
+          "enum": [
+            "auto",
+            "dark",
+            "light",
+            "high-contrast"
+          ],
           "default": "auto",
           "description": "%config.theme.description%"
         }
