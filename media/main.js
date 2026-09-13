@@ -30,11 +30,16 @@
       pillRunningTitle: '筛选正在运行或后台任务',
       pillSuccessTitle: '筛选正常执行完毕的任务',
       tasksCount: '个任务',
+      taskCount: '{n} 个任务',
       tasksFilteredCount: '{filtered} / {total} 个任务',
       emptyFiltered: '没有符合当前筛选条件的任务',
       resetFilter: '点击重置筛选条件',
       emptyInit: '暂无任务记录',
+      emptyState: '暂无任务记录',
+      emptyStateDesc: '在终端中执行命令将实时显示在这里',
+      loadingTasks: '正在加载任务记录...',
       hiddenOlder: '... 已隐藏更早的 {n} 个任务',
+      sessionTitle: '会话: {title}\nID: {id}\n点击折叠/展开',
       sessionTooltip: '会话: {title}\nID: {id}\n点击折叠/展开',
       tabAll: '全部',
       tabStdout: '输出',
@@ -69,6 +74,7 @@
       settingsText: '设置',
       settingsTitle: '偏好设置 (语言、主题、日志路径)',
       settingsModalTitle: '偏好设置',
+      modalClose: '关闭',
       lblSettingLang: '界面语言 (Language)',
       lblSettingLangDesc: '选择插件界面的显示语言',
       optLangAuto: '自动跟随 (Auto / 跟随 IDE)',
@@ -82,11 +88,16 @@
       optThemeHighContrast: '高对比度 (High Contrast)',
       lblSettingLogPath: '运行日志存储路径',
       lblSettingLogPathDesc: 'Claude Code 执行命令的所有输出与元数据保存在此目录',
+      clickToCopy: '点击复制',
       btnCopyPath: '复制路径',
+      openInExplorer: '在系统资源管理器中打开',
       btnOpenFolder: '打开目录',
       lblSettingCleanup: '历史任务清理',
       lblSettingCleanupDesc: '一键安全清理所有已完成/已结束的历史命令与日志文件（未完成及后台任务严格保留）',
+      cleanCompletedTitle: '一键清理已完成任务',
       btnClearFinished: '一键清理已完成',
+      cleaning: '正在安全清理...',
+      clearedCount: '✓ 已清理 {count} 个已完成',
       btnDone: '完成',
       copiedPathNotice: '✓ 已复制路径到剪贴板！',
     },
@@ -116,11 +127,16 @@
       pillRunningTitle: 'Filter running or background tasks',
       pillSuccessTitle: 'Filter successfully finished tasks',
       tasksCount: 'tasks',
+      taskCount: '{n} tasks',
       tasksFilteredCount: '{filtered} / {total} tasks',
       emptyFiltered: 'No tasks match current filter',
       resetFilter: 'Click to reset filters',
       emptyInit: 'No task records yet',
+      emptyState: 'No task records yet',
+      emptyStateDesc: 'Commands executed in terminal will appear here in real-time',
+      loadingTasks: 'Loading task records...',
       hiddenOlder: '... Hidden {n} older tasks',
+      sessionTitle: 'Session: {title}\nID: {id}\nClick to toggle collapse',
       sessionTooltip: 'Session: {title}\nID: {id}\nClick to toggle collapse',
       tabAll: 'All',
       tabStdout: 'Stdout',
@@ -155,6 +171,7 @@
       settingsText: 'Settings',
       settingsTitle: 'Preferences (Language, Theme, Log Path)',
       settingsModalTitle: 'Preferences',
+      modalClose: 'Close',
       lblSettingLang: 'Interface Language',
       lblSettingLangDesc: 'Choose display language for the monitor',
       optLangAuto: 'Auto (Follow IDE)',
@@ -168,11 +185,16 @@
       optThemeHighContrast: 'High Contrast',
       lblSettingLogPath: 'Runs Log Directory',
       lblSettingLogPathDesc: 'Directory where all command output logs and metadata are stored',
+      clickToCopy: 'Click to copy',
       btnCopyPath: 'Copy Path',
+      openInExplorer: 'Open in system file explorer',
       btnOpenFolder: 'Open Folder',
       lblSettingCleanup: 'Task History Cleanup',
       lblSettingCleanupDesc: 'Safely clean completed command logs and files. Active running and background tasks are strictly preserved.',
+      cleanCompletedTitle: 'Clean completed tasks',
       btnClearFinished: 'Clear Completed Tasks',
+      cleaning: 'Cleaning...',
+      clearedCount: '✓ Cleared {count} completed',
       btnDone: 'Done',
       copiedPathNotice: '✓ Log path copied to clipboard!',
     }
@@ -180,7 +202,8 @@
 
   const savedLangPref = localStorage.getItem('ccm_language_preference') || 'auto';
   const savedThemePref = localStorage.getItem('ccm_theme_preference') || 'auto';
-  let initialLocale = ((navigator.language || 'en').toLowerCase().startsWith('zh')) ? 'zh' : 'en';
+  const ideLocale = window.__IDE_LOCALE__ || (((navigator.language || 'en').toLowerCase().startsWith('zh')) ? 'zh' : 'en');
+  let initialLocale = ideLocale;
   if (savedLangPref === 'zh' || savedLangPref === 'en') {
     initialLocale = savedLangPref;
   }
@@ -325,6 +348,7 @@
     setTxt('textSettings', 'settingsText');
     setAttr('btnOpenSettings', 'title', 'settingsTitle');
     setTxt('settingsModalTitle', 'settingsModalTitle');
+    setAttr('btnCloseSettings', 'title', 'modalClose');
     setTxt('lblSettingLang', 'lblSettingLang');
     setTxt('lblSettingLangDesc', 'lblSettingLangDesc');
     setTxt('optLangAuto', 'optLangAuto');
@@ -338,20 +362,43 @@
     setTxt('optThemeHighContrast', 'optThemeHighContrast');
     setTxt('lblSettingLogPath', 'lblSettingLogPath');
     setTxt('lblSettingLogPathDesc', 'lblSettingLogPathDesc');
+    setAttr('settingRunsDirPath', 'title', 'clickToCopy');
+    setAttr('btnCopyRunsDir', 'title', 'btnCopyPath');
     setTxt('textBtnCopyPath', 'btnCopyPath');
+    setAttr('btnOpenRunsDir', 'title', 'openInExplorer');
     setTxt('textBtnOpenFolder', 'btnOpenFolder');
     setTxt('lblSettingCleanup', 'lblSettingCleanup');
     setTxt('lblSettingCleanupDesc', 'lblSettingCleanupDesc');
+    setAttr('btnClearFinishedTasks', 'title', 'cleanCompletedTitle');
     setTxt('textBtnClearFinished', 'btnClearFinished');
     setTxt('textBtnDone', 'btnDone');
 
-    if (terminalOutput) {
-      terminalOutput.setAttribute('data-empty-hint', t('emptyTerminalHint'));
+    const activeCmdEl = activeCmdText || document.getElementById('activeCmdText');
+    if (activeCmdEl && !state.activeRunId) {
+      activeCmdEl.innerText = t('noTaskSelected');
+    }
+
+    const termEl = terminalOutput || document.getElementById('terminalOutput');
+    if (termEl) {
+      termEl.setAttribute('data-empty-hint', t('emptyTerminalHint'));
+    }
+
+    const sessContainer = sessionsContainer || document.getElementById('sessionsContainer');
+    if (sessContainer && (!state.sessions || Object.keys(state.sessions).length === 0)) {
+      sessContainer.innerHTML = `<div class="empty-state">${t('emptyState')}<br>${t('emptyStateDesc')}</div>`;
+      const cntBadge = taskCountBadge || document.getElementById('taskCountBadge');
+      if (cntBadge) cntBadge.innerText = t('taskCount', { n: 0 });
     }
 
     updateHookBadge();
     updateAutoFollowBadge();
     updateScrollButton();
+  }
+
+  function updateActiveTaskHeader() {
+    if (state.activeRunId && state.activeSessionId) {
+      updateActiveBar(state.activeRunId, state.activeSessionId);
+    }
   }
 
   // DOM element cache
@@ -508,7 +555,7 @@
         btnClearFinishedTasks.disabled = true;
         const textBtnClearFinished = document.getElementById('textBtnClearFinished');
         if (textBtnClearFinished) {
-          textBtnClearFinished.textContent = state.locale === 'zh' ? '正在安全清理...' : 'Cleaning...';
+          textBtnClearFinished.textContent = t('cleaning');
         }
         vscode.postMessage({ command: 'clearCompletedTasks' });
       });
@@ -743,9 +790,7 @@
         const textBtnClearFinished = document.getElementById('textBtnClearFinished');
         if (textBtnClearFinished) {
           const original = t('btnClearFinished');
-          const notice = state.locale === 'zh'
-            ? `✓ 已清理 ${message.count} 个已完成`
-            : `✓ Cleared ${message.count} completed`;
+          const notice = t('clearedCount', { count: message.count });
           textBtnClearFinished.textContent = notice;
           setTimeout(() => {
             textBtnClearFinished.textContent = original;

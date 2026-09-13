@@ -38,6 +38,7 @@ class HookManager {
 
   toggle() {
     const currentState = this.isEnabled();
+    const isZh = (vscode.env.language || 'en').toLowerCase().startsWith('zh');
     if (currentState) {
       // Disable hook: write .disabled flag
       try {
@@ -46,7 +47,9 @@ class HookManager {
         }
         fs.writeFileSync(this.disabledFile, 'disabled', 'utf8');
       } catch (e) {
-        vscode.window.showErrorMessage(`写入停用标记失败: ${e.message}`);
+        vscode.window.showErrorMessage(
+          isZh ? `写入停用标记失败: ${e.message}` : `Failed to write disabled flag: ${e.message}`
+        );
       }
       return false;
     } else {
@@ -57,7 +60,9 @@ class HookManager {
         }
         this.ensureSettingsConfigured();
       } catch (e) {
-        vscode.window.showErrorMessage(`恢复 Hook 失败: ${e.message}`);
+        vscode.window.showErrorMessage(
+          isZh ? `恢复 Hook 失败: ${e.message}` : `Failed to restore Hook: ${e.message}`
+        );
       }
       return true;
     }
@@ -1118,7 +1123,10 @@ class ClaudeCodeMonitorViewProvider {
         case 'copyRunsDir': {
           const runsDir = getRunsDir();
           vscode.env.clipboard.writeText(runsDir);
-          vscode.window.showInformationMessage(`已复制日志目录路径: ${runsDir}`);
+          const isZh = (vscode.env.language || 'en').toLowerCase().startsWith('zh');
+          vscode.window.showInformationMessage(
+            isZh ? `已复制日志目录路径: ${runsDir}` : `Log directory path copied: ${runsDir}`
+          );
           break;
         }
         case 'copyText':
@@ -1263,7 +1271,10 @@ class ClaudeCodeMonitorViewProvider {
         vscode.window.showTextDocument(doc, { preview: false });
       });
     } else {
-      vscode.window.showWarningMessage('未找到该任务的标准输出日志文件');
+      const isZh = (vscode.env.language || 'en').toLowerCase().startsWith('zh');
+      vscode.window.showWarningMessage(
+        isZh ? '未找到该任务的标准输出日志文件' : 'Standard output log file not found for this task'
+      );
     }
   }
 
@@ -1272,9 +1283,10 @@ class ClaudeCodeMonitorViewProvider {
     const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
 
     const nonce = getNonce();
+    const isZh = (vscode.env.language || 'en').toLowerCase().startsWith('zh');
 
     return `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="${isZh ? 'zh-CN' : 'en'}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1330,27 +1342,27 @@ class ClaudeCodeMonitorViewProvider {
       <!-- Category and Search Filter Bar -->
       <div class="filter-bar">
         <div class="filter-search-row">
-          <input type="text" id="taskSearchInput" class="filter-search-input" placeholder="🔍 搜索命令 / 描述 / 会话..." />
-          <button id="btnClearSearch" class="filter-clear-btn" title="清空搜索" style="display:none;">✕</button>
+          <input type="text" id="taskSearchInput" class="filter-search-input" placeholder="${isZh ? '🔍 搜索命令 / 描述 / 会话...' : '🔍 Search command / desc / session...'}" />
+          <button id="btnClearSearch" class="filter-clear-btn" title="${isZh ? '清空搜索' : 'Clear search'}" style="display:none;">✕</button>
         </div>
         <div class="filter-pills-row" id="filterPills">
-          <button class="filter-pill active" data-filter="all"><span id="pillTextAll">全部</span></button>
-          <button class="filter-pill" data-filter="running" id="pillRunning"><span class="pill-icon">⚡</span><span id="pillTextRunning">运行中</span></button>
-          <button class="filter-pill" data-filter="failed" id="pillFailed"><span class="pill-icon">❌</span><span id="pillTextFailed">失败</span></button>
-          <button class="filter-pill" data-filter="success" id="pillSuccess"><span class="pill-icon">✔️</span><span id="pillTextSuccess">成功</span></button>
+          <button class="filter-pill active" data-filter="all"><span id="pillTextAll">${isZh ? '全部' : 'All'}</span></button>
+          <button class="filter-pill" data-filter="running" id="pillRunning" title="${isZh ? '筛选正在运行或后台任务' : 'Filter running or background tasks'}"><span class="pill-icon">⚡</span><span id="pillTextRunning">${isZh ? '运行中' : 'Running'}</span></button>
+          <button class="filter-pill" data-filter="failed" id="pillFailed" title="${isZh ? '筛选执行失败或被中断的任务' : 'Filter failed or interrupted tasks'}"><span class="pill-icon">❌</span><span id="pillTextFailed">${isZh ? '失败' : 'Failed'}</span></button>
+          <button class="filter-pill" data-filter="success" id="pillSuccess" title="${isZh ? '筛选正常执行完毕的任务' : 'Filter successfully finished tasks'}"><span class="pill-icon">✔️</span><span id="pillTextSuccess">${isZh ? '成功' : 'Success'}</span></button>
           <button class="filter-pill" data-filter="git" id="pillGit"><span id="pillTextGit">Git</span></button>
-          <button class="filter-pill" data-filter="test" id="pillTest"><span id="pillTextTest">测试</span></button>
-          <button class="filter-pill" data-filter="build" id="pillBuild"><span id="pillTextBuild">构建</span></button>
-          <button class="filter-pill" data-filter="script" id="pillScript"><span id="pillTextScript">脚本</span></button>
+          <button class="filter-pill" data-filter="test" id="pillTest"><span id="pillTextTest">${isZh ? '测试' : 'Test'}</span></button>
+          <button class="filter-pill" data-filter="build" id="pillBuild"><span id="pillTextBuild">${isZh ? '构建' : 'Build'}</span></button>
+          <button class="filter-pill" data-filter="script" id="pillScript"><span id="pillTextScript">${isZh ? '脚本' : 'Script'}</span></button>
         </div>
       </div>
       <div id="sessionsContainer" class="sessions-container">
-        <div class="empty-state">正在加载任务记录...</div>
+        <div class="empty-state">${isZh ? '正在加载任务记录...' : 'Loading task records...'}</div>
       </div>
     </div>
 
     <!-- Draggable Vertical Splitter -->
-    <div id="panelSplitter" class="panel-splitter" title="上下拖拽可调整列表与终端面板高度">
+    <div id="panelSplitter" class="panel-splitter" title="${isZh ? '上下拖拽可调整列表与终端面板高度' : 'Drag vertically to resize task list and terminal'}">
       <div class="splitter-handle"></div>
     </div>
 
@@ -1358,20 +1370,20 @@ class ClaudeCodeMonitorViewProvider {
     <div class="terminal-panel" id="terminalPanel">
       <div class="terminal-toolbar">
         <div class="tabs-group">
-          <button id="tabAll" class="tab-btn active" data-filter="all">全部</button>
-          <button id="tabStdout" class="tab-btn" data-filter="stdout">输出</button>
-          <button id="tabStderr" class="tab-btn" data-filter="stderr">错误</button>
+          <button id="tabAll" class="tab-btn active" data-filter="all">${isZh ? '全部' : 'All'}</button>
+          <button id="tabStdout" class="tab-btn" data-filter="stdout">${isZh ? '输出' : 'Stdout'}</button>
+          <button id="tabStderr" class="tab-btn" data-filter="stderr">${isZh ? '错误' : 'Stderr'}</button>
         </div>
 
         <div class="terminal-tools">
-          <button id="btnScrollLock" class="btn-icon toggle-scroll-btn active" title="自动滚动锁定">
-            <span class="btn-emoji">⏬</span> <span id="textScrollLock">滚动</span>
+          <button id="btnScrollLock" class="btn-icon toggle-scroll-btn active" title="${isZh ? '已锁定自动滚动（点击取消）' : 'Auto-scroll locked (click to pause)'}">
+            <span class="btn-emoji">⏬</span> <span id="textScrollLock">${isZh ? '滚动' : 'Scroll'}</span>
           </button>
-          <button id="btnCopyCommand" class="btn-icon" title="复制当前命令">
-            <span class="btn-emoji">📋</span> <span id="textCopyCmd">复制</span>
+          <button id="btnCopyCommand" class="btn-icon" title="${isZh ? '复制当前命令' : 'Copy current command'}">
+            <span class="btn-emoji">📋</span> <span id="textCopyCmd">${isZh ? '复制' : 'Copy'}</span>
           </button>
-          <button id="btnOpenInEditor" class="btn-icon" title="在原生编辑器打开完整输出日志">
-            <span class="btn-emoji">📄</span> <span id="textOpenLog">日志</span>
+          <button id="btnOpenInEditor" class="btn-icon" title="${isZh ? '在原生编辑器打开完整输出日志' : 'Open full output log in editor'}">
+            <span class="btn-emoji">📄</span> <span id="textOpenLog">${isZh ? '日志' : 'Log'}</span>
           </button>
         </div>
       </div>
@@ -1379,7 +1391,7 @@ class ClaudeCodeMonitorViewProvider {
       <!-- Active Task Command Banner -->
       <div class="active-command-bar">
         <span class="cmd-prompt">$</span>
-        <span id="activeCmdText" class="cmd-text">(未选择任务)</span>
+        <span id="activeCmdText" class="cmd-text">${isZh ? '(未选择任务)' : '(No task selected)'}</span>
         <span id="activeStatusBadge" class="cmd-status-badge" style="display:none;"></span>
         <span id="activeExitBadge" class="cmd-exit-badge" style="display:none;"></span>
         <span id="activeDurationBadge" class="cmd-duration-badge" style="display:none;"></span>
@@ -1387,12 +1399,12 @@ class ClaudeCodeMonitorViewProvider {
 
       <!-- Crash Armor Truncation Notice Banner -->
       <div id="truncationBanner" class="truncation-banner">
-        <span id="truncationText">⚠️ 已启用防爆保护：仅在面板保留最多 3,000 行输出。</span>
-        <button id="btnBannerOpen" class="btn-icon" style="color:inherit;text-decoration:underline;">在编辑器打开完整日志</button>
+        <span id="truncationText">${isZh ? '⚠️ 已启用防爆保护：仅在面板保留最多 3,000 行输出。' : '⚠️ Buffer protection active: keeping latest 3,000 lines in panel.'}</span>
+        <button id="btnBannerOpen" class="btn-icon" style="color:inherit;text-decoration:underline;">${isZh ? '在编辑器打开完整日志' : 'Open full log in editor'}</button>
       </div>
 
       <!-- Real-time Terminal Output Viewport -->
-      <div id="terminalOutput" class="terminal-output"></div>
+      <div id="terminalOutput" class="terminal-output" data-empty-hint="${isZh ? '暂无输出内容或等待任务运行中...' : 'No output yet or waiting for task to run...'}"></div>
     </div>
   </div>
 
@@ -1402,20 +1414,20 @@ class ClaudeCodeMonitorViewProvider {
       <div class="modal-header">
         <div class="modal-title-group">
           <span class="modal-icon">⚙️</span>
-          <h3 id="settingsModalTitle" class="modal-title">偏好设置</h3>
+          <h3 id="settingsModalTitle" class="modal-title">${isZh ? '偏好设置' : 'Preferences'}</h3>
         </div>
-        <button id="btnCloseSettings" class="modal-close-btn" title="关闭">✕</button>
+        <button id="btnCloseSettings" class="modal-close-btn" title="${isZh ? '关闭' : 'Close'}">✕</button>
       </div>
       <div class="modal-body">
         <!-- Language Settings -->
         <div class="setting-item">
           <div class="setting-label-row">
-            <label for="settingLanguage" id="lblSettingLang" class="setting-label">界面语言 (Language)</label>
-            <span id="lblSettingLangDesc" class="setting-desc">选择插件界面的显示语言</span>
+            <label for="settingLanguage" id="lblSettingLang" class="setting-label">${isZh ? '界面语言 (Language)' : 'Interface Language'}</label>
+            <span id="lblSettingLangDesc" class="setting-desc">${isZh ? '选择插件界面的显示语言' : 'Choose display language for the monitor'}</span>
           </div>
           <select id="settingLanguage" class="setting-select">
-            <option value="auto" id="optLangAuto">自动跟随 (Auto / 跟随 IDE)</option>
-            <option value="zh" id="optLangZh">简体中文 (Simplified Chinese)</option>
+            <option value="auto" id="optLangAuto">${isZh ? '自动跟随 (Auto / 跟随 IDE)' : 'Auto (Follow IDE)'}</option>
+            <option value="zh" id="optLangZh">${isZh ? '简体中文 (Simplified Chinese)' : 'Simplified Chinese (简体中文)'}</option>
             <option value="en" id="optLangEn">English</option>
           </select>
         </div>
@@ -1423,32 +1435,32 @@ class ClaudeCodeMonitorViewProvider {
         <!-- Theme Settings -->
         <div class="setting-item">
           <div class="setting-label-row">
-            <label for="settingTheme" id="lblSettingTheme" class="setting-label">外观主题 (Theme)</label>
-            <span id="lblSettingThemeDesc" class="setting-desc">选择色彩模式或自动跟随编辑器</span>
+            <label for="settingTheme" id="lblSettingTheme" class="setting-label">${isZh ? '外观主题 (Theme)' : 'Appearance Theme'}</label>
+            <span id="lblSettingThemeDesc" class="setting-desc">${isZh ? '选择色彩模式或自动跟随编辑器' : 'Select color mode or follow editor'}</span>
           </div>
           <select id="settingTheme" class="setting-select">
-            <option value="auto" id="optThemeAuto">自动跟随 (Auto / 跟随 IDE)</option>
-            <option value="dark" id="optThemeDark">深色模式 (Dark)</option>
-            <option value="light" id="optThemeLight">浅色模式 (Light)</option>
-            <option value="high-contrast" id="optThemeHighContrast">高对比度 (High Contrast)</option>
+            <option value="auto" id="optThemeAuto">${isZh ? '自动跟随 (Auto / 跟随 IDE)' : 'Auto (Follow IDE)'}</option>
+            <option value="dark" id="optThemeDark">${isZh ? '深色模式 (Dark)' : 'Dark Mode'}</option>
+            <option value="light" id="optThemeLight">${isZh ? '浅色模式 (Light)' : 'Light Mode'}</option>
+            <option value="high-contrast" id="optThemeHighContrast">${isZh ? '高对比度 (High Contrast)' : 'High Contrast'}</option>
           </select>
         </div>
 
         <!-- Log Storage Directory -->
         <div class="setting-item">
           <div class="setting-label-row">
-            <label id="lblSettingLogPath" class="setting-label">运行日志存储路径</label>
-            <span id="lblSettingLogPathDesc" class="setting-desc">Claude Code 执行命令的所有输出与元数据保存在此目录</span>
+            <label id="lblSettingLogPath" class="setting-label">${isZh ? '运行日志存储路径' : 'Runs Log Directory'}</label>
+            <span id="lblSettingLogPathDesc" class="setting-desc">${isZh ? 'Claude Code 执行命令的所有输出与元数据保存在此目录' : 'Directory where all command output logs and metadata are stored'}</span>
           </div>
           <div class="setting-path-box">
-            <div id="settingRunsDirPath" class="setting-path-text" title="点击复制">~/.claude/bash-runs</div>
+            <div id="settingRunsDirPath" class="setting-path-text" title="${isZh ? '点击复制' : 'Click to copy'}">~/.claude/bash-runs</div>
           </div>
           <div class="setting-path-actions">
-            <button id="btnCopyRunsDir" class="setting-btn-sub" title="复制路径">
-              <span class="btn-emoji">📋</span> <span id="textBtnCopyPath">复制路径</span>
+            <button id="btnCopyRunsDir" class="setting-btn-sub" title="${isZh ? '复制路径' : 'Copy Path'}">
+              <span class="btn-emoji">📋</span> <span id="textBtnCopyPath">${isZh ? '复制路径' : 'Copy Path'}</span>
             </button>
-            <button id="btnOpenRunsDir" class="setting-btn-sub" title="在系统资源管理器中打开">
-              <span class="btn-emoji">📂</span> <span id="textBtnOpenFolder">打开目录</span>
+            <button id="btnOpenRunsDir" class="setting-btn-sub" title="${isZh ? '在系统资源管理器中打开' : 'Open in system file explorer'}">
+              <span class="btn-emoji">📂</span> <span id="textBtnOpenFolder">${isZh ? '打开目录' : 'Open Folder'}</span>
             </button>
           </div>
         </div>
@@ -1456,24 +1468,27 @@ class ClaudeCodeMonitorViewProvider {
         <!-- Task History Safe Cleanup -->
         <div class="setting-item">
           <div class="setting-label-row">
-            <label id="lblSettingCleanup" class="setting-label">历史任务清理</label>
-            <span id="lblSettingCleanupDesc" class="setting-desc">一键安全清理所有已完成/已结束的历史命令与日志文件（未完成及后台任务严格保留）</span>
+            <label id="lblSettingCleanup" class="setting-label">${isZh ? '历史任务清理' : 'Task History Cleanup'}</label>
+            <span id="lblSettingCleanupDesc" class="setting-desc">${isZh ? '一键安全清理所有已完成/已结束的历史命令与日志文件（未完成及后台任务严格保留）' : 'Safely clean completed command logs and files. Active running and background tasks are strictly preserved.'}</span>
           </div>
           <div class="setting-path-actions">
-            <button id="btnClearFinishedTasks" class="setting-btn-sub setting-btn-danger" title="一键清理已完成任务">
-              <span class="btn-emoji">🗑️</span> <span id="textBtnClearFinished">一键清理已完成</span>
+            <button id="btnClearFinishedTasks" class="setting-btn-sub setting-btn-danger" title="${isZh ? '一键清理已完成任务' : 'Clean completed tasks'}">
+              <span class="btn-emoji">🗑️</span> <span id="textBtnClearFinished">${isZh ? '一键清理已完成' : 'Clear Completed Tasks'}</span>
             </button>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button id="btnDoneSettings" class="setting-btn-primary modal-done-btn">
-          <span id="textBtnDone">完成</span>
+          <span id="textBtnDone">${isZh ? '完成' : 'Done'}</span>
         </button>
       </div>
     </div>
   </div>
 
+  <script nonce="${nonce}">
+    window.__IDE_LOCALE__ = "${isZh ? 'zh' : 'en'}";
+  </script>
   <script nonce="${nonce}" src="${scriptUri}?v=${nonce}"></script>
 </body>
 </html>`;
