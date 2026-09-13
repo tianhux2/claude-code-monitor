@@ -33,6 +33,7 @@
     "process"
   ],
   "activationEvents": [
+    "onView:claudeCodeMonitorView",
     "onStartupFinished"
   ],
   "main": "./extension.js",
